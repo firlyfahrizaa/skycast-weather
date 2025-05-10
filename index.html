@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,maximum-scale=1"
+    />
+
+    <title>SkyCast - Home</title>
+
+    <!-- Loading third party fonts -->
+    <link
+      href="http://fonts.googleapis.com/css?family=Roboto:300,400,700|"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link href="fonts/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Loading main css file -->
+    <link rel="stylesheet" href="style.css" />
+	<link favicon="images/awan.ico" href="images/awan.ico" type="image/x-icon" rel="shortcut icon" />
+
+    <!--[if lt IE 9]>
+      <script src="js/ie-support/html5.js"></script>
+      <script src="js/ie-support/respond.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="site-content">
+      <div class="site-header">
+        <div class="container">
+          <a href="index.html" class="branding">
+            <img src="images/awan55.png" style="width: 64px; height: 64px;" alt="" class="logo" />
+            <div class="logo-type">
+              <h1 class="site-title">SkyCast</h1>
+            </div>
+          </a>
+
+          <!-- Default snippet for navigation -->
+          <div class="main-navigation">
+            <button type="button" class="menu-toggle">
+              <i class="fa fa-bars"></i>
+            </button>
+            <ul class="menu">
+              <li class="menu-item current-menu-item">
+                <a href="index.html">Home</a>
+              </li>
+              <li class="menu-item"><a href="photos.html">Photos</a></li>
+              <li class="menu-item"><a href="contact.html">Contact</a></li>
+            </ul>
+            <!-- .menu -->
+          </div>
+          <!-- .main-navigation -->
+
+          <div class="mobile-navigation"></div>
+        </div>
+      </div>
+      <!-- .site-header -->
+
+      <div class="hero" data-bg-image="images/banner.png">
+        <div class="container">
+          <form onsubmit="searchCity(event)" class="find-location">
+            <input
+              type="text"
+              id="cityInput"
+              placeholder="Find your location..."
+            />
+            <input type="submit" value="Find" />
+          </form>
+        </div>
+      </div>
+
+      <div class="forecast-table">
+        <div class="container">
+          <div class="forecast-container">
+            <div class="today forecast">
+              <div class="forecast-header">
+                <div class="day" id="day">Loading...</div>
+                <div class="date" id="date">--</div>
+              </div>
+              <div class="forecast-content">
+                <div class="location" id="location">Loading...</div>
+                <div class="degree">
+                  <div class="num" id="temp">--</div>
+                  <div class="forecast-icon">
+                    <img id="weather-icon" src="" alt="icon" width="90" />
+                  </div>
+                </div>
+                <span>
+                  <img src="images/icon-umberella.png" alt="" />
+                  <span id="humidity">--</span>%</span
+                >
+                <span>
+                  <img src="images/icon-wind.png" alt="" />
+                  <span id="wind">--</span> km/h</span
+                >
+                <span>
+                  <img src="images/icon-compass.png" alt="" />
+                  <span id="direction">--</span></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- .main-content -->
+
+      <footer class="site-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-8">
+              <form action="#" class="subscribe-form">
+                <input
+                  type="text"
+                  placeholder="Enter your email to subscribe..."
+                />
+                <input type="submit" value="Subscribe" />
+              </form>
+            </div>
+            <div class="col-md-3 col-md-offset-1">
+              <div class="social-links">
+                <a href="https://facebook.com/firlyfahriza" target="_blank"><i class="fa fa-facebook"></i></a>
+                <a href="https://instagram.com/firlyfahriza" target="_blank"><i class="fa fa-instagram"></i></a>
+                <a href="https://x.com/firlyfahriza" target="_blank"><i class="fa fa-twitter"></i></a>
+                <a href="https://youtube.com/@firlyfahriza" target="_blank"><i class="fa fa-youtube"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <p class="colophon">
+            Copyright 2014 Company name. Designed by Themezy. All rights
+            reserved
+          </p>
+        </div>
+      </footer>
+      <!-- .site-footer -->
+    </div>
+
+    <script>
+      const apiKey = "a04838d88cbe4676bfe62007251005";
+
+      // Fungsi menampilkan hari dan tanggal saat ini
+      function updateDateInfo() {
+        const days = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+
+        const today = new Date();
+        const dayName = days[today.getDay()];
+        const dateNum = today.getDate();
+        const monthName = months[today.getMonth()];
+
+        document.getElementById("day").textContent = dayName;
+        document.getElementById("date").textContent = `${dateNum} ${monthName}`;
+      }
+
+      // Fungsi utama ambil data cuaca berdasarkan kota
+      async function getWeatherByCity(city) {
+        try {
+          const response = await fetch(
+            `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`
+          );
+          const data = await response.json();
+
+          document.getElementById("location").textContent = data.location.name;
+          document.getElementById(
+            "temp"
+          ).innerHTML = `${data.current.temp_c}<sup>o</sup>C`;
+          document.getElementById(
+            "weather-icon"
+          ).src = `https:${data.current.condition.icon}`;
+          document.getElementById("humidity").textContent =
+            data.current.humidity;
+          document.getElementById("wind").textContent = data.current.wind_kph;
+          document.getElementById("direction").textContent =
+            data.current.wind_dir;
+
+          updateDateInfo();
+        } catch (error) {
+          alert("Kota tidak ditemukan. Silakan coba lagi.");
+        }
+      }
+
+      // Fungsi pencarian kota saat submit form
+      function searchCity(event) {
+        event.preventDefault();
+        const city = document.getElementById("cityInput").value.trim();
+        if (city !== "") {
+          getWeatherByCity(city);
+        }
+      }
+
+      // Tampilkan default (Jakarta) saat pertama kali halaman dibuka
+      window.onload = () => {
+        getWeatherByCity("Jakarta");
+      };
+    </script>
+
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
